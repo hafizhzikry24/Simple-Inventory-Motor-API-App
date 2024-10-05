@@ -7,6 +7,7 @@ use App\Imports\SparePartsImport;
 use App\Models\SparePartMotor;
 use App\Models\Motor;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -236,11 +237,19 @@ class SparePartMotorController extends Controller
 
     public function export(Request $request)
     {
+        Log::info('Export request received');
+
         try {
             $searchTerm = $request->input('search', '');
+            Log::info('Search term for export: ' . $searchTerm);
 
-            return Excel::download(new SparePartsExport($searchTerm), 'spare_parts.xlsx');
+            $response = Excel::download(new SparePartsExport($searchTerm), 'spare_parts.xlsx');
+            Log::info('Export successful, file generated');
+
+            return $response;
         } catch (\Exception $e) {
+            Log::error('Export failed: ' . $e->getMessage());
+
             return response()->json([
                 'status' => 'error',
                 'message' => 'Something went wrong during the export process.',
@@ -248,8 +257,5 @@ class SparePartMotorController extends Controller
             ], 500);
         }
     }
-
-
-
 
 }

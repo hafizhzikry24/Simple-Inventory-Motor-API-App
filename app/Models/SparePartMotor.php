@@ -18,7 +18,7 @@ class SparePartMotor extends Model
     ];
 
     public function motor() {
-        return $this->belongsTo(Motor::class, 'motor_id');
+        return $this->belongsTo(Motor::class);
     }
 
 }
